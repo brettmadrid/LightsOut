@@ -32,24 +32,34 @@ class Board extends Component {
   static defaultProps = {
     ncols: 5,
     nrows: 5,
+    chanceLightsStartOn: 0.25,
   };
   constructor(props) {
     super(props);
 
-    // TODO: set initial state
+    this.state = {
+      hasWon: false,
+      board: this.createBoard(),
+    };
   }
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
 
-  createBoard() {
+  createBoard = () => {
     let board = [];
-    // TODO: create array-of-arrays of true/false values
+    for (let i = 0; i < this.props.ncols; i++) {
+      let row = [];
+      for (let j = 0; j < this.props.nrows; j++) {
+        row.push(Math.random() < this.props.chanceLightsStartOn);
+      }
+      board.push(row);
+    }
     return board;
-  }
+  };
 
   /** handle changing a cell: update board & determine if winner */
 
-  flipCellsAround(coord) {
+  flipCellsAround = coord => {
     let { ncols, nrows } = this.props;
     let board = this.state.board;
     let [y, x] = coord.split('-').map(Number);
@@ -73,27 +83,45 @@ class Board extends Component {
     // TODO: determine is the game has been won
 
     // this.setState({ board, hasWon });
-  }
+  };
 
   /** Render game board or winning message. */
+  makeTable = () => {
+    let tblBoard = [];
+  };
 
   render() {
+    let tblBoard = [];
+    for (let i = 0; i < this.props.ncols; i++) {
+      let row = [];
+      for (let j = 0; j < this.props.nrows; j++) {
+        let coord = `${i}-${j}`;
+        row.push(<Cell key={coord} isLit={this.state.board[i][j]} />);
+      }
+      tblBoard.push(<tr key={i}>{row}</tr>);
+    }
     return (
+      // <div>
+      //   {this.state.hasWon ? (
+      //     <div className='winner'>
+      //       <span className='neon-orange'>YOU</span>
+      //       <span className='neon-blue'>WIN!</span>
+      //     </div>
+      //   ) : (
+      //     <div>
+      //       <div className='Board-title'>
+      //         <div className='neon-orange'>Lights</div>
+      //         <div className='neon-blue'>Out</div>
+      //       </div>
+      //       {this.makeTable()}
+      //     </div>
+      //   )}
+      // </div>
+
       <table className='Board'>
-        <tbody>
-          <tr>
-            <Cell isLit={true} />
-          </tr>
-        </tbody>
+        <tbody>{tblBoard}</tbody>
       </table>
     );
-    // if the game is won, just show a winning msg & render nothing else
-
-    // TODO
-
-    // make table board
-
-    // TODO
   }
 }
 
